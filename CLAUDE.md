@@ -4,16 +4,15 @@ Guidance for working in this repo. See `../projectStructure.md` for the full sca
 
 ## What this is
 
-A **Tauri v2** desktop app: a React WebView frontend talking over HTTP to a **Bun + Hono**
-backend that ships as a Tauri **sidecar** (a compiled binary bundled with the app). Data
-lives in **SQLite** via `bun:sqlite`.
+A **Tauri v2** desktop app for a single-doctor pediatric clinic: a React WebView frontend
+talking over HTTP to a **Bun + Hono** backend that ships as a Tauri **sidecar** (a compiled
+binary bundled with the app). Data lives in **SQLite** via `bun:sqlite`.
 
-## Repo location (important)
+## Repo location
 
-The app is **double-nested**. The outer `ABC/` only holds `projectStructure.md` and a
-stray `package.json`. **All work happens in the inner app root: `ABC/ABC/`** — that's
-where this file, `package.json`, `src/`, and `src-tauri/` live. Paths below are relative
-to that app root.
+The working directory (`C:\Users\KonouzAbdelaziz\Desktop\Asmaa-Baby-Clinic`) **is** the app
+root — `package.json`, `src/`, and `src-tauri/` are all here. (The outer `ABC/` wrapper
+described in `projectStructure.md` was flattened; ignore that reference.)
 
 ## Prerequisites
 
@@ -36,7 +35,7 @@ to that app root.
 | Desktop | Tauri v2 (Rust), `tauri-plugin-shell` (spawns sidecar), `tauri-plugin-opener` |
 | Tooling | Bun (package manager + runtime) |
 
-## Commands (run from `ABC/ABC/`)
+## Commands
 
 ```bash
 bun install                 # install frontend deps
@@ -65,7 +64,7 @@ Request flow: **Component → TanStack Query hook → `src/lib/api.ts` → Hono 
 service → `bun:sqlite`**.
 
 **Feature-folder pattern, mirrored on both sides.** Frontend and sidecar each have a
-`features/<name>/` folder; keep names in sync. See `users` as the reference example.
+`features/<name>/` folder; keep names in sync.
 
 - Frontend feature: `src/features/<name>/{schemas,api,hooks,components,index.ts}`
 - Sidecar feature: `src-tauri/sidecar/features/<name>/<name>.{schema,service,routes}.ts`
@@ -84,6 +83,25 @@ apply once each at startup.
 
 **Frontend:** add `schemas/`, `api/`, `hooks/use-<name>.ts`, `components/`, and a
 barrel `index.ts`.
+
+## Database schema
+
+Full schema in `src-tauri/sidecar/db/migrations/001_init.sql`. 12 tables across 3 logical entities:
+
+**Patient** — `patient`, `patient_allergies`, `patient_problems`, `patient_medications`, `patient_immunizations`  
+**Visit** — `visit`, `visit_exam_findings`, `visit_medications`, `visit_diagnoses`, `visit_screenings`, `visit_attachments`  
+**Report** — `report` (monthly cost inputs; totals computed from `visit.fee` at query time)
+
+Key conventions:
+- All primary keys are **UUIDs** (`TEXT NOT NULL`), generated in the service layer with `crypto.randomUUID()`.
+- **MRN** is auto-generated as `P-0001`, `P-0002` … using the `_sequences` table. In the patient service, increment the counter and format before insert:
+  ```typescript
+  db.run("UPDATE _sequences SET value = value + 1 WHERE name = 'patient_mrn'");
+  const { value } = db.query("SELECT value FROM _sequences WHERE name = 'patient_mrn'").get() as { value: number };
+  const mrn = `P-${value.toString().padStart(4, '0')}`;
+  ```
+- **Computed fields** (BMI, growth percentiles, z-scores, age at visit, BP percentile) are **not stored** — derive them in the application layer.
+- Enable FK enforcement at DB init: `db.run("PRAGMA foreign_keys = ON")` — `bun:sqlite` does not enable it by default.
 
 ## Tauri v2 gotchas
 
