@@ -1,32 +1,13 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router"
 import { useSidecar } from "./hooks/use-sidecar"
-import { LoginPage } from "./pages/login/login-page"
+import { LoginPage } from "./pages/login-page"
+import { HomePage } from "./pages/home-page"
+import { PatientsPage } from "./pages/patients-page"
+import { VisitsPage } from "./pages/visits-page"
+import { ReportsPage } from "./pages/reports-page"
+import { SettingsPage } from "./pages/settings-page"
+import { MainLayout } from "./components/main-layout"
 import { ProtectedRoute } from "./components/protected-route"
-import { useAuth, useLogout } from "./features/auth"
-import { Button } from "./components/ui/button"
-
-function HomePage() {
-  const { user } = useAuth()
-  const logout = useLogout()
-
-  return (
-    <main className="container mx-auto p-8">
-      <header className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">
-          Signed in as {user?.displayName}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => logout.mutate()}
-          disabled={logout.isPending}
-        >
-          Log out
-        </Button>
-      </header>
-    </main>
-  )
-}
 
 function App() {
   useSidecar()
@@ -36,13 +17,18 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route
-          path="/"
           element={
             <ProtectedRoute>
-              <HomePage />
+              <MainLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="/" element={<HomePage />} />
+          <Route path="/patients" element={<PatientsPage />} />
+          <Route path="/visits" element={<VisitsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

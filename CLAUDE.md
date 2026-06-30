@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for working in this repo. See `../projectStructure.md` for the full scaffold reference and boilerplate.
+Guidance for working in this repo. See `docs/projectStructure.md` for the full scaffold reference and boilerplate.
 
 ## What this is
 

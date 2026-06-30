@@ -12,11 +12,19 @@ export function LoginPage() {
   }, [isAuthenticated, navigate]);
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
-      <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-md bg-card p-8 rounded-xl">
+      <div className="relative flex flex-col gap-4 p-6 md:p-10">
+        {/* On small screens the side panel is hidden, so show the pattern
+            behind the form card instead of a blank background. */}
+        <img
+          src="/pattern.png"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover lg:hidden"
+        />
+        <div className="relative flex flex-1 items-center justify-center">
+          <div className="w-full max-w-md bg-card p-8 rounded-xl shadow-lg">
             <img
-              src="/login-bg.png"
+              src="/text-logo.webp"
               alt="Asmaa Baby Clinic"
               className="size-6 object-contain align-center mx-auto mb-4 h-40 w-40 rounded-full"
             />

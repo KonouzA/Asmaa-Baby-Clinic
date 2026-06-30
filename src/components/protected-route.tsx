@@ -7,7 +7,11 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (isBootstrapping) {
     return (
       <main className="flex min-h-svh items-center justify-center">
-        <p className="text-muted-foreground">Loading…</p>
+        <img
+          src="/logo.webp"
+          alt="Asmaa Baby Clinic"
+          className="w-32 animate-pulse md:w-40"
+        />
       </main>
     )
   }

@@ -6,7 +6,7 @@ with data stored in **SQLite** (`bun:sqlite`).
 
 > **Repo layout note:** the app lives in the inner folder `ABC/ABC/`. Run every command
 > below from there. See [`CLAUDE.md`](./CLAUDE.md) for architecture and conventions, and
-> [`../projectStructure.md`](../projectStructure.md) for the full scaffold reference.
+> [`docs/projectStructure.md`](./docs/projectStructure.md) for the full scaffold reference.
 
 ## Tech stack
 

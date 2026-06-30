@@ -4,11 +4,15 @@ import {
   useEffect,
   useState,
   type ReactNode,
-} from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { TOKEN_KEY, UNAUTHORIZED_EVENT } from '@/lib/api';
-import { authApi } from '../api/auth.api';
-import type { LoginDto, LoginResponse, SessionUser } from '../schemas/auth.schema';
+} from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { TOKEN_KEY, UNAUTHORIZED_EVENT } from "@/lib/api";
+import { authApi } from "../api/auth.api";
+import type {
+  LoginDto,
+  LoginResponse,
+  SessionUser,
+} from "../schemas/auth.schema";
 
 type AuthContextValue = {
   user: SessionUser | null;
@@ -45,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // sessions are gone), /me returns 401 and the api interceptor fires
   // UNAUTHORIZED_EVENT, dropping us back to the login screen.
   const meQuery = useQuery({
-    queryKey: ['auth', 'me'],
+    queryKey: ["auth", "me"],
     queryFn: authApi.me,
     enabled: !!token && !user,
     retry: false,
@@ -63,12 +67,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
     return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
   }, []);
-
-  const isBootstrapping = !!token && !user && meQuery.isLoading;
+  const isBootstrapping = !!token && !user && !meQuery.isError;
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, isBootstrapping, setSession, clear }}
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isBootstrapping,
+        setSession,
+        clear,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -77,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
   return ctx;
 }
 
