@@ -5,6 +5,7 @@ import { requireAuth } from './middleware/require-auth';
 import { authRoutes } from './features/auth/auth.routes';
 import { ensureDefaultUser } from './features/auth/auth.service';
 import { patientsRoutes } from './features/patients/patients.routes';
+import { visitsRoutes } from './features/visits/visits.routes';
 
 ensureDefaultUser();
 
@@ -21,6 +22,7 @@ app.route('/api/auth', authRoutes);
 const api = new Hono();
 api.use('*', requireAuth);
 api.route('/patients', patientsRoutes);
+api.route('/visits', visitsRoutes);
 app.route('/api', api);
 
 app.onError(errorHandler);
