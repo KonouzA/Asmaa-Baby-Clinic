@@ -9,9 +9,11 @@
 import m001 from './migrations/001_init.sql' with { type: 'text' };
 import m002 from './migrations/002_auth.sql' with { type: 'text' };
 import m003 from './migrations/003_expenses.sql' with { type: 'text' };
+import m004 from './migrations/003_tasks.sql' with { type: 'text' };
 
 export const migrations: { name: string; sql: string }[] = [
   { name: '001_init.sql', sql: m001 },
   { name: '002_auth.sql', sql: m002 },
   { name: '003_expenses.sql', sql: m003 },
+  { name: '003_tasks.sql', sql: m004 },
 ];

@@ -8,6 +8,7 @@ import { patientsRoutes } from './features/patients/patients.routes';
 import { visitsRoutes } from './features/visits/visits.routes';
 import { reportsRoutes } from './features/reports/reports.routes';
 import { expensesRoutes } from './features/expenses/expenses.routes';
+import { tasksRoutes } from './features/tasks/tasks.routes';
 
 ensureDefaultUser();
 
@@ -27,6 +28,7 @@ api.route('/patients', patientsRoutes);
 api.route('/visits', visitsRoutes);
 api.route('/reports', reportsRoutes);
 api.route('/expenses', expensesRoutes);
+api.route('/tasks', tasksRoutes);
 app.route('/api', api);
 
 app.onError(errorHandler);
