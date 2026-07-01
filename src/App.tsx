@@ -3,6 +3,7 @@ import { useSidecar } from "./hooks/use-sidecar"
 import { LoginPage } from "./pages/login-page"
 import { HomePage } from "./pages/home-page"
 import { PatientsPage } from "./pages/patients-page"
+import { PatientDetailPage } from "./pages/patient-detail-page"
 import { VisitsPage } from "./pages/visits-page"
 import { ReportsPage } from "./pages/reports-page"
 import { SettingsPage } from "./pages/settings-page"
@@ -25,6 +26,7 @@ function App() {
         >
           <Route path="/" element={<HomePage />} />
           <Route path="/patients" element={<PatientsPage />} />
+          <Route path="/patients/:patientId" element={<PatientDetailPage />} />
           <Route path="/visits" element={<VisitsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
