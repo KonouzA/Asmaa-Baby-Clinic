@@ -15,6 +15,7 @@ import type {
   ProblemDto,
   UpdatePatientDto,
 } from "../schemas/patients.schema";
+import type { ClinicalDiff } from "../components/patient-draft";
 
 // ── Query keys ──────────────────────────────────────────────────────────────────
 
@@ -95,6 +96,54 @@ export function useUpdatePatient(id: string) {
       });
     },
     onError: (err: Error) => toast.error("Could not update patient", { description: err.message }),
+  });
+}
+
+/**
+ * Save the edit modal in one shot: patient core fields plus the staged clinical
+ * add/remove operations, mirroring how creation batches its writes. A single
+ * toast covers the whole save instead of one per clinical mutation.
+ */
+export function useSavePatientEdits(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      core,
+      diff,
+    }: {
+      core: UpdatePatientDto;
+      diff: ClinicalDiff;
+    }) => {
+      const updated = await patientsApi.update(id, core);
+      await Promise.all([
+        ...diff.allergies.removed.map((a) => patientsApi.deleteAllergy(id, a)),
+        ...diff.allergies.added.map((a) => patientsApi.createAllergy(id, a)),
+        ...diff.problems.removed.map((p) => patientsApi.deleteProblem(id, p)),
+        ...diff.problems.added.map((p) => patientsApi.createProblem(id, p)),
+        ...diff.medications.removed.map((m) =>
+          patientsApi.deleteMedication(id, m),
+        ),
+        ...diff.medications.added.map((m) =>
+          patientsApi.createMedication(id, m),
+        ),
+        ...diff.immunizations.removed.map((i) =>
+          patientsApi.deleteImmunization(id, i),
+        ),
+        ...diff.immunizations.added.map((i) =>
+          patientsApi.createImmunization(id, i),
+        ),
+      ]);
+      return updated;
+    },
+    onSuccess: (patient) => {
+      invalidatePatient(qc, id);
+      qc.invalidateQueries({ queryKey: patientKeys.growth(id) });
+      toast.success("Patient updated", {
+        description: `${patient.full_name}'s details were saved.`,
+      });
+    },
+    onError: (err: Error) =>
+      toast.error("Could not update patient", { description: err.message }),
   });
 }
 

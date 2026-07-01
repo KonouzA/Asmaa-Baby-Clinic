@@ -17,7 +17,7 @@ export function PatientDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-6 md:px-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-6 md:px-10 2xl:max-w-7xl">
         <Skeleton className="h-10 w-64" />
         <Skeleton className="h-10 w-full" />
         <Skeleton className="h-64 w-full" />
@@ -27,7 +27,7 @@ export function PatientDetailPage() {
 
   if (isError || !patient) {
     return (
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-2 px-6 py-20 text-center">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-2 px-6 py-20 text-center 2xl:max-w-7xl">
         <p className="text-lg font-medium">Patient not found</p>
         <p className="text-sm text-muted-foreground">
           This patient may have been deleted or the link is invalid.

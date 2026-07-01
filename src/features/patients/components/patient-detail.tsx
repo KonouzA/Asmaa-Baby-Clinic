@@ -3,18 +3,9 @@ import { useNavigate } from "react-router";
 import { CalendarPlus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { ResponsiveTabsNav } from "./responsive-tabs-nav";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,10 +37,22 @@ import {
 import { GrowthChart } from "./growth-chart";
 import { PatientEditDialog } from "./patient-edit-dialog";
 
+const DETAIL_TABS = [
+  { value: "basic", label: "Basic" },
+  { value: "birth", label: "Birth Info" },
+  { value: "clinical", label: "Clinical List" },
+  { value: "vaccination", label: "Vaccination" },
+  { value: "growth", label: "Growth" },
+  { value: "visits", label: "Visits" },
+] as const;
+
+type DetailTab = (typeof DETAIL_TABS)[number]["value"];
+
 export function PatientDetail({ patient }: { patient: PatientFull }) {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [tab, setTab] = useState<DetailTab>("basic");
   const del = useDeletePatient();
 
   const onDelete = () => {
@@ -59,7 +62,7 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-6 md:px-10">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-6 md:px-10 2xl:max-w-7xl">
       {/* Action bar */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
@@ -72,8 +75,8 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
-            <span className="font-mono">{patient.mrn}</span> · {formatAge(patient.dob)} ·
-            Born {formatDate(patient.dob)}
+            <span className="font-mono">{patient.mrn}</span> ·{" "}
+            {formatAge(patient.dob)} · Born {formatDate(patient.dob)}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -81,7 +84,11 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
             <Pencil className="size-4" />
             Edit
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => navigate("/visits")}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => navigate("/visits")}
+          >
             <CalendarPlus className="size-4" />
             New visit
           </Button>
@@ -96,18 +103,16 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
         </div>
       </div>
 
-      <Tabs defaultValue="basic">
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="basic">Basic</TabsTrigger>
-          <TabsTrigger value="birth">Birth Info</TabsTrigger>
-          <TabsTrigger value="clinical">Clinical List</TabsTrigger>
-          <TabsTrigger value="vaccination">Vaccination</TabsTrigger>
-          <TabsTrigger value="growth">Growth</TabsTrigger>
-        </TabsList>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as DetailTab)}>
+        <ResponsiveTabsNav
+          tabs={DETAIL_TABS}
+          value={tab}
+          onValueChange={setTab}
+        />
 
         <TabsContent value="basic">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <InfoGrid
                 rows={[
                   ["Full name", patient.full_name],
@@ -121,7 +126,12 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
                       ? (patient.blood_type as string)
                       : "—",
                   ],
-                  ["Feeding", patient.feeding_type ? FEEDING_TYPE_LABELS[patient.feeding_type] : "—"],
+                  [
+                    "Feeding",
+                    patient.feeding_type
+                      ? FEEDING_TYPE_LABELS[patient.feeding_type]
+                      : "—",
+                  ],
                   ["Weaning status", patient.weaning_status ?? "—"],
                 ]}
               />
@@ -131,7 +141,7 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
 
         <TabsContent value="birth">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <InfoGrid
                 rows={[
                   [
@@ -172,10 +182,13 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
                   [
                     "Newborn screening",
                     patient.newborn_screening_done
-                      ? patient.newborn_screening_result ?? "Done"
+                      ? (patient.newborn_screening_result ?? "Done")
                       : "Not done",
                   ],
-                  ["Neonatal complications", patient.neonatal_complications ?? "—"],
+                  [
+                    "Neonatal complications",
+                    patient.neonatal_complications ?? "—",
+                  ],
                 ]}
               />
             </CardContent>
@@ -184,9 +197,15 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
 
         <TabsContent value="clinical">
           <Card>
-            <CardContent className="flex flex-col gap-6 pt-6">
-              <AllergiesSection patientId={patient.id} items={patient.allergies} />
-              <ProblemsSection patientId={patient.id} items={patient.problems} />
+            <CardContent className="flex flex-col gap-6">
+              <AllergiesSection
+                patientId={patient.id}
+                items={patient.allergies}
+              />
+              <ProblemsSection
+                patientId={patient.id}
+                items={patient.problems}
+              />
               <MedicationsSection
                 patientId={patient.id}
                 items={patient.medications}
@@ -197,7 +216,7 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
 
         <TabsContent value="vaccination">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <ImmunizationsSection
                 patientId={patient.id}
                 items={patient.immunizations}
@@ -216,9 +235,11 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
 
-      <VisitHistory patientId={patient.id} />
+        <TabsContent value="visits">
+          <VisitHistory patientId={patient.id} />
+        </TabsContent>
+      </Tabs>
 
       <PatientEditDialog
         patient={patient}
@@ -276,7 +297,9 @@ function VisitHistory({ patientId }: { patientId: string }) {
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading visits…</p>
         ) : !data || data.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No visits recorded yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No visits recorded yet.
+          </p>
         ) : (
           <ul className="flex flex-col divide-y">
             {data.map((v) => (
