@@ -4,6 +4,7 @@ import { errorHandler } from './middleware/error';
 import { requireAuth } from './middleware/require-auth';
 import { authRoutes } from './features/auth/auth.routes';
 import { ensureDefaultUser } from './features/auth/auth.service';
+import { patientsRoutes } from './features/patients/patients.routes';
 
 ensureDefaultUser();
 
@@ -19,7 +20,7 @@ app.route('/api/auth', authRoutes);
 // Protected: all feature routes go here. requireAuth runs first for every sub-route.
 const api = new Hono();
 api.use('*', requireAuth);
-// api.route('/patients', patientsRoutes);  ← future features mount here
+api.route('/patients', patientsRoutes);
 app.route('/api', api);
 
 app.onError(errorHandler);

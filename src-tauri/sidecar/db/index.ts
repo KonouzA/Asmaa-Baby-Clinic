@@ -3,6 +3,7 @@ import { migrations } from './migrations';
 
 const db = new Database('app.db', { create: true });
 db.exec('PRAGMA journal_mode = WAL;');
+db.exec('PRAGMA foreign_keys = ON;');
 
 // Apply embedded migrations in order, once each (see ./migrations.ts).
 runMigrations();
