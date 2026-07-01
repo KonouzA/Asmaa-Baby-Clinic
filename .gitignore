@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# SQLite data (sidecar working directory — see CLAUDE.md)
+app.db
+app.db-shm
+app.db-wal
+src-tauri/app.db
+src-tauri/app.db-shm
+src-tauri/app.db-wal
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
