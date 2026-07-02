@@ -4,7 +4,6 @@ import {
   Users,
   Stethoscope,
   FileBarChart,
-  Settings as SettingsIcon,
   type LucideIcon,
 } from "lucide-react";
 import { LogOut } from "lucide-react";
