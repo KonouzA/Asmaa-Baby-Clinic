@@ -24,14 +24,17 @@ type ReportRow = {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const COST_COLS = [
-  'cost_electricity_clinic', 'cost_electricity_stairs', 'cost_water',
-  'cost_phone_personal', 'cost_landline', 'cost_internet',
-  'cost_cleaning', 'cost_secretary', 'cost_medical_waste', 'cost_others',
-] as const;
-
-function totalCost(row: ReportRow) {
-  return COST_COLS.reduce((sum, col) => sum + (row[col] ?? 0), 0);
+// Total cost is now the sum of itemized rows in the `expense` ledger
+// (see features/expenses) rather than the fixed cost_* columns below —
+// those columns are kept only for backward-compatible reads via the
+// PUT /api/reports/:year/:month endpoint.
+function expenseTotal(month: number, year: number) {
+  const result = db
+    .query<{ total: number | null }, [number, number]>(
+      'SELECT SUM(value) AS total FROM expense WHERE year = ? AND month = ?',
+    )
+    .get(year, month);
+  return result?.total ?? 0;
 }
 
 // Compute visit-derived totals for a given month/year.
@@ -62,7 +65,7 @@ function visitTotals(month: number, year: number) {
 }
 
 function enrichReport(row: ReportRow) {
-  const cost = totalCost(row);
+  const cost = expenseTotal(row.month, row.year);
   const { total_payment, visit_count, patient_count } = visitTotals(row.month, row.year);
   return {
     ...row,
@@ -76,6 +79,7 @@ function enrichReport(row: ReportRow) {
 
 // Zero-filled placeholder for months that have no cost row yet.
 function emptyMonth(month: number, year: number) {
+  const cost = expenseTotal(month, year);
   const { total_payment, visit_count, patient_count } = visitTotals(month, year);
   return {
     id: null,
@@ -94,9 +98,9 @@ function emptyMonth(month: number, year: number) {
     notes: null,
     created_at: null,
     updated_at: null,
-    total_cost: 0,
+    total_cost: cost,
     total_payment,
-    net: total_payment,
+    net: total_payment - cost,
     visit_count,
     patient_count,
   };
@@ -253,11 +257,7 @@ export function getDashboard() {
     .all();
 
   const trend = last6Months.map(({ month, year }) => {
-    const reportRow = db
-      .query<ReportRow, [number, number]>('SELECT * FROM report WHERE year = ? AND month = ?')
-      .get(year, month);
-
-    const cost = reportRow ? totalCost(reportRow) : 0;
+    const cost = expenseTotal(month, year);
     const { total_payment, visit_count } = visitTotals(month, year);
     return { month, year, revenue: total_payment, cost, net: total_payment - cost, visit_count };
   });
