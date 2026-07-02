@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Fragment } from "react";
+import { AnimatedBackground } from "./animated-background";
 
 export type Crumb = {
   label: string;
@@ -76,9 +77,10 @@ export function MainLayout() {
 
   return (
     <PageHeaderContext.Provider value={value}>
-      <div className="flex min-h-svh flex-col bg-background">
+      <div className="relative flex min-h-svh flex-col bg-background">
+        <AnimatedBackground />
         <PageHeader config={config} />
-        <div className="flex-1">
+        <div className="relative z-10 flex-1">
           <Outlet />
         </div>
       </div>

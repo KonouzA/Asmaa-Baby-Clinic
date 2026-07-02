@@ -1,4 +1,3 @@
-import { useEffect, type CSSProperties } from "react";
 import { Link } from "react-router";
 import {
   Users,
@@ -86,34 +85,6 @@ export function HomePage() {
       disabled: logout.isPending,
     },
   });
-
-  useEffect(() => {
-    const cards = document.querySelectorAll<HTMLElement>(".spotlight-card");
-
-    const handleMouseMove = (ev: MouseEvent) => {
-      cards.forEach((card) => {
-        const blob = card.querySelector<HTMLElement>(".blob");
-        const fblob = card.querySelector<HTMLElement>(".fake-blob");
-        if (!blob || !fblob) return;
-
-        const rec = fblob.getBoundingClientRect();
-        blob.style.opacity = "1";
-        blob.animate(
-          [
-            {
-              transform: `translate(${
-                ev.clientX - rec.left - rec.width / 2
-              }px, ${ev.clientY - rec.top - rec.height / 2}px)`,
-            },
-          ],
-          { duration: 300, fill: "forwards" },
-        );
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   return (
     <main className="relative overflow-hidden">
