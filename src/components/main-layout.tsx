@@ -7,7 +7,12 @@ import {
   type ReactNode,
 } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
-import { ChevronsRightIcon, HomeIcon, type LucideIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  ChevronsRightIcon,
+  HomeIcon,
+  type LucideIcon,
+} from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -89,14 +94,14 @@ function PageHeader({ config }: { config: PageHeaderConfig }) {
     config.action === undefined
       ? isHome
         ? null
-        : { label: "Back", onClick: () => navigate(-1) }
+        : { label: "Back", icon: ArrowLeftIcon, onClick: () => navigate(-1) }
       : config.action;
 
   const ActionIcon = action?.icon;
 
   return (
     <header className="sticky top-0 z-30 backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3 md:px-10">
+      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-3 md:px-10 2xl:max-w-[96rem]">
         <div className="flex min-w-0 items-center gap-3">
           <Link to="/" className="flex shrink-0 items-center gap-2.5">
             <img
