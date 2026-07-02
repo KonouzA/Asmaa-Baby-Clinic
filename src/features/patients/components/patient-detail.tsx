@@ -87,7 +87,7 @@ export function PatientDetail({ patient }: { patient: PatientFull }) {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => navigate("/visits")}
+            onClick={() => navigate(`/visits/new?patientId=${patient.id}`)}
           >
             <CalendarPlus className="size-4" />
             New visit
