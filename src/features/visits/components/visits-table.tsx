@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateTime } from "@/features/patients/lib";
+import { formatCurrency } from "@/lib/format";
 import type { VisitListItem } from "../schemas/visits.schema";
 import { VISIT_STATUS_BADGE, VISIT_STATUS_LABELS, VISIT_TYPE_LABELS } from "../lib";
 
@@ -73,7 +74,7 @@ export function VisitsTable({
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right font-medium tabular-nums">
-                  {v.fee != null ? v.fee.toFixed(2) : "—"}
+                  {v.fee != null ? formatCurrency(v.fee) : "—"}
                 </TableCell>
               </TableRow>
             ))

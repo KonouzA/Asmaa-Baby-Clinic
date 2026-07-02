@@ -36,6 +36,7 @@ import {
 } from "./clinical-list-section";
 import { GrowthChart } from "./growth-chart";
 import { PatientEditDialog } from "./patient-edit-dialog";
+import { formatCurrency } from "@/lib/format";
 
 const DETAIL_TABS = [
   { value: "basic", label: "Basic" },
@@ -319,7 +320,7 @@ function VisitHistory({ patientId }: { patientId: string }) {
                 <div className="flex items-center gap-2">
                   {v.fee != null && (
                     <span className="text-sm text-muted-foreground">
-                      {v.fee.toFixed(2)}
+                      {formatCurrency(v.fee)}
                     </span>
                   )}
                   <Badge variant="outline" className="font-normal">

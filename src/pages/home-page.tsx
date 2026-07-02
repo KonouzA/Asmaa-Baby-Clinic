@@ -4,6 +4,9 @@ import {
   Users,
   Stethoscope,
   FileBarChart,
+  CalendarCheck,
+  CalendarClock,
+  TrendingUp,
   type LucideIcon,
 } from "lucide-react";
 import { LogOut } from "lucide-react";
@@ -11,6 +14,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth, useLogout } from "@/features/auth";
 import { usePageHeader } from "@/components/main-layout";
 import { cn } from "@/lib/utils";
+import {
+  DashboardTrendChart,
+  ReportStatCard,
+  TodayQueueCard,
+  formatCurrency,
+  useDashboard,
+} from "@/features/reports";
+import { AzkarWidget, PrayerTimesCard } from "@/features/islamic";
+
+const now = new Date();
 
 type NavCard = {
   title: string;
@@ -58,6 +71,11 @@ const NAV_CARDS: NavCard[] = [
 export function HomePage() {
   const { user } = useAuth();
   const logout = useLogout();
+  const { data: dashboard, isLoading: dashLoading } = useDashboard();
+
+  const thisMonth = dashboard?.trend.find(
+    (t) => t.month === now.getMonth() + 1 && t.year === now.getFullYear(),
+  );
 
   usePageHeader({
     breadcrumbs: [],
@@ -98,7 +116,7 @@ export function HomePage() {
   }, []);
 
   return (
-    <main className="relative min-h-svh overflow-hidden">
+    <main className="relative overflow-hidden">
       {/* Floating decorative shapes */}
       <div
         aria-hidden
@@ -158,7 +176,7 @@ export function HomePage() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-10 md:px-10 md:py-14">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-10 md:px-10 md:py-14 2xl:max-w-[96rem]">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">
             Welcome back
@@ -211,6 +229,65 @@ export function HomePage() {
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Dashboard */}
+        <div className="mt-10 space-y-6">
+          {/* Dashboard grid: left panel (KPIs + charts) and right panel (prayer times) */}
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
+            {/* Left column: KPIs, queue, and trend */}
+            <div className="lg:col-span-3 flex flex-col gap-5">
+              {/* KPI strip */}
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <ReportStatCard
+                  label="Today's visits"
+                  value={String(dashboard?.today_count ?? 0)}
+                  icon={CalendarCheck}
+                  isLoading={dashLoading}
+                />
+                <ReportStatCard
+                  label="Upcoming"
+                  value={String(dashboard?.upcoming_count ?? 0)}
+                  icon={CalendarClock}
+                  isLoading={dashLoading}
+                />
+                <ReportStatCard
+                  label="Total patients"
+                  value={String(dashboard?.total_patients ?? 0)}
+                  icon={Users}
+                  isLoading={dashLoading}
+                />
+                <ReportStatCard
+                  label="Net this month"
+                  value={formatCurrency(thisMonth?.net ?? 0)}
+                  tone={
+                    (thisMonth?.net ?? 0) > 0
+                      ? "positive"
+                      : (thisMonth?.net ?? 0) < 0
+                        ? "negative"
+                        : "default"
+                  }
+                  icon={TrendingUp}
+                  isLoading={dashLoading}
+                />
+              </div>
+
+              {/* Today's queue and trend chart */}
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <TodayQueueCard />
+                <DashboardTrendChart
+                  trend={dashboard?.trend}
+                  isLoading={dashLoading}
+                />
+              </div>
+            </div>
+
+            {/* Right column: Prayer times (narrower on desktop, full width on mobile) */}
+            <PrayerTimesCard />
+          </div>
+
+          {/* Doaa & Azkar */}
+          <AzkarWidget />
         </div>
       </div>
     </main>

@@ -6,6 +6,8 @@ import { authRoutes } from './features/auth/auth.routes';
 import { ensureDefaultUser } from './features/auth/auth.service';
 import { patientsRoutes } from './features/patients/patients.routes';
 import { visitsRoutes } from './features/visits/visits.routes';
+import { reportsRoutes } from './features/reports/reports.routes';
+import { expensesRoutes } from './features/expenses/expenses.routes';
 
 ensureDefaultUser();
 
@@ -23,6 +25,8 @@ const api = new Hono();
 api.use('*', requireAuth);
 api.route('/patients', patientsRoutes);
 api.route('/visits', visitsRoutes);
+api.route('/reports', reportsRoutes);
+api.route('/expenses', expensesRoutes);
 app.route('/api', api);
 
 app.onError(errorHandler);
