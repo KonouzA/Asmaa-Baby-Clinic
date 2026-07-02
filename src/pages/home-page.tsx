@@ -4,7 +4,6 @@ import {
   Users,
   Stethoscope,
   FileBarChart,
-  Settings as SettingsIcon,
   type LucideIcon,
 } from "lucide-react";
 import { LogOut } from "lucide-react";
@@ -53,16 +52,6 @@ const NAV_CARDS: NavCard[] = [
     iconClass: "from-accent to-accent/70 text-accent-foreground",
     glowClass: "bg-accent/60",
     titleClass: "text-accent",
-  },
-  {
-    title: "Settings",
-    description:
-      "Configure clinic details, account preferences and application options.",
-    to: "/settings",
-    icon: SettingsIcon,
-    iconClass: "from-chart-2 to-chart-4 text-white",
-    glowClass: "bg-chart-3/60",
-    titleClass: "text-chart-2",
   },
 ];
 
@@ -180,7 +169,7 @@ export function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {NAV_CARDS.map((nav) => (
             <Link
               key={nav.to}
