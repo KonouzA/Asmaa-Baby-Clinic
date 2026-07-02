@@ -11,6 +11,7 @@ import {
   ArrowLeftIcon,
   ChevronsRightIcon,
   HomeIcon,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -119,17 +120,26 @@ function PageHeader({ config }: { config: PageHeaderConfig }) {
           <HeaderBreadcrumbs crumbs={config.breadcrumbs ?? []} />
         </div>
 
-        {action && (
+        <div className="flex items-center gap-2">
           <Button
-            variant={action.variant ?? "outline"}
-            size="sm"
-            onClick={action.onClick}
-            disabled={action.disabled}
+            variant="ghost"
+            onClick={() => navigate(`/settings`)}
           >
-            {ActionIcon && <ActionIcon className="size-4" />}
-            {action.label}
+            <Settings className="size-4" />
           </Button>
-        )}
+
+          {action && (
+            <Button
+              variant={action.variant ?? "outline"}
+              size="sm"
+              onClick={action.onClick}
+              disabled={action.disabled}
+            >
+              {ActionIcon && <ActionIcon className="size-4" />}
+              {action.label}
+            </Button>
+          )}
+        </div>
       </div>
     </header>
   );
