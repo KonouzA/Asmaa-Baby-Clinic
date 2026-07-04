@@ -36,7 +36,10 @@ export const visitHpiSchema = z.object({
 export const visitPlanSchema = z.object({
   plan_treatment: z.string().optional(),
   plan_precautions: z.string().optional(),
-  plan_follow_up_date: z.iso.date().optional(),
+  plan_follow_up_date: z.preprocess(
+    (v) => (v === '' ? undefined : v),
+    z.iso.date().optional(),
+  ),
   plan_referrals: z.string().optional(),
 });
 

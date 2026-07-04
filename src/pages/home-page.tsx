@@ -1,4 +1,3 @@
-import { type CSSProperties } from "react";
 import { Link } from "react-router";
 import {
   Users,
@@ -7,6 +6,7 @@ import {
   CalendarCheck,
   CalendarClock,
   TrendingUp,
+  ArrowUpRight,
   type LucideIcon,
 } from "lucide-react";
 import { LogOut } from "lucide-react";
@@ -33,6 +33,7 @@ type NavCard = {
   iconClass: string;
   glowClass: string;
   titleClass: string;
+  borderClass: string;
 };
 
 const NAV_CARDS: NavCard[] = [
@@ -45,6 +46,7 @@ const NAV_CARDS: NavCard[] = [
     iconClass: "from-primary to-primary/70 text-primary-foreground",
     glowClass: "bg-primary/60",
     titleClass: "text-primary",
+    borderClass: "border-primary/40",
   },
   {
     title: "Visits",
@@ -55,6 +57,7 @@ const NAV_CARDS: NavCard[] = [
     iconClass: "from-secondary to-secondary/70 text-secondary-foreground",
     glowClass: "bg-secondary/60",
     titleClass: "text-secondary",
+    borderClass: "border-secondary/40",
   },
   {
     title: "Reports",
@@ -65,6 +68,7 @@ const NAV_CARDS: NavCard[] = [
     iconClass: "from-accent to-accent/70 text-accent-foreground",
     glowClass: "bg-accent/60",
     titleClass: "text-accent",
+    borderClass: "border-accent/40",
   },
 ];
 
@@ -89,70 +93,11 @@ export function HomePage() {
 
   return (
     <main className="relative overflow-hidden">
-      {/* Floating decorative shapes */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-      >
-        <img
-          src="/A.webp"
-          alt=""
-          className="floating-shape absolute -left-6 top-24 w-24 blur-[1px] md:w-32"
-          style={
-            {
-              "--float-anim": "float-a",
-              "--float-duration": "9s",
-              "--fade-duration": "11s",
-              "--float-delay": "0s",
-            } as CSSProperties
-          }
-        />
-        <img
-          src="/B.webp"
-          alt=""
-          className="floating-shape absolute right-[8%] top-12 w-20 blur-[1px] md:w-28"
-          style={
-            {
-              "--float-anim": "float-b",
-              "--float-duration": "11s",
-              "--fade-duration": "13s",
-              "--float-delay": "1.5s",
-            } as CSSProperties
-          }
-        />
-        <img
-          src="/C.webp"
-          alt=""
-          className="floating-shape absolute bottom-16 left-[12%] w-24 blur-[1px] md:w-32"
-          style={
-            {
-              "--float-anim": "float-c",
-              "--float-duration": "10s",
-              "--fade-duration": "12s",
-              "--float-delay": "0.8s",
-            } as CSSProperties
-          }
-        />
-        <img
-          src="/A.webp"
-          alt=""
-          className="floating-shape absolute -right-4 bottom-24 w-16 blur-[1px] md:w-20"
-          style={
-            {
-              "--float-anim": "float-c",
-              "--float-duration": "13s",
-              "--fade-duration": "9s",
-              "--float-delay": "2.2s",
-            } as CSSProperties
-          }
-        />
-      </div>
-
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-10 md:px-10 md:py-14 2xl:max-w-[96rem]">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back
-            {user?.displayName ? `, ${user.displayName}` : ""} 👋
+            Welcome back Dr.
+            {user?.displayName ? ` ${user.displayName}` : ""}
           </h1>
           <p className="text-sm text-muted-foreground">
             Jump to any section of the clinic dashboard.
@@ -167,7 +112,19 @@ export function HomePage() {
               className="group block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <div className="spotlight-card relative h-full overflow-hidden rounded-xl bg-border p-px transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
-                <Card className="h-full ring-0 transition-all duration-300 ease-in-out group-hover:bg-card/90 group-hover:backdrop-blur-[20px]">
+                <Card
+                  className={cn(
+                    "relative h-full border-2 ring-0 transition-all duration-300 ease-in-out group-hover:bg-card/90 group-hover:backdrop-blur-[20px]",
+                    nav.borderClass,
+                  )}
+                >
+                  <ArrowUpRight
+                    className={cn(
+                      "absolute right-3 top-3 size-4 opacity-60 transition-all duration-300 ease-in-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100",
+                      nav.titleClass,
+                    )}
+                    strokeWidth={2.5}
+                  />
                   <CardHeader>
                     <div
                       className={cn(

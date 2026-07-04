@@ -12,8 +12,8 @@ import { formatCurrency, MONTH_SHORT } from "../lib";
 import { ChartCard } from "./chart-card";
 
 const config = {
-  total_payment: { label: "Income", color: "var(--primary)" },
-  total_cost: { label: "Expenses", color: "var(--secondary)" },
+  total_payment: { label: "Income", color: "var(--secondary)" },
+  total_cost: { label: "Expenses", color: "var(--primary)" },
 } satisfies ChartConfig;
 
 /** Grouped income-vs-expense bars across the 12 months of a year. */

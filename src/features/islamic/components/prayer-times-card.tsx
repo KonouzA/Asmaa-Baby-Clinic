@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { usePrayerTimes } from "../hooks/use-islamic";
-import type { PrayerTimes } from "../api/islamic.api";
+import type { PrayerCurrentStatus, PrayerTimes } from "../api/islamic.api";
 
 const PRAYER_LABELS: Record<keyof PrayerTimes, string> = {
   imsak: "Imsak",
@@ -41,21 +41,28 @@ function to12Hour(time: string): string {
   return `${hour12}:${minute} ${period}`;
 }
 
+function describeNextPrayer(status: PrayerCurrentStatus): string {
+  if (!status.next_prayer) {
+    return `Next: ${PRAYER_LABELS.fajr} tomorrow`;
+  }
+  const label =
+    PRAYER_LABELS[status.next_prayer as keyof PrayerTimes] ?? status.next_prayer;
+  return `Next: ${label} in ${status.time_until_next}`;
+}
+
 /** Today's prayer times for the clinic's location, from UmmahAPI. */
 export function PrayerTimesCard() {
   const { data, isLoading, isError } = usePrayerTimes();
 
   return (
-    <Card className="h-full">
+    <Card className="h-full border-2 border-islamic bg-linear-to-br from-islamic/20 to-islamic/0">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Moon className="size-4 text-muted-foreground" />
+        <CardTitle className="flex items-center gap-2 text-islamic-foreground">
+          <Moon className="size-4" />
           Prayer times
         </CardTitle>
         <CardDescription>
-          {data
-            ? `Next: ${PRAYER_LABELS[data.current_status.next_prayer as keyof PrayerTimes] ?? data.current_status.next_prayer} in ${data.current_status.time_until_next}`
-            : "Today's prayer schedule"}
+          {data ? describeNextPrayer(data.current_status) : "Today's prayer schedule"}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -78,23 +85,23 @@ export function PrayerTimesCard() {
                   key={key}
                   className={cn(
                     "flex items-center justify-between gap-3 rounded-lg border px-3 py-2",
-                    isCurrent && "border-primary bg-primary/5",
+                    isCurrent && "border-islamic-foreground bg-islamic/5",
                   )}
                 >
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-xs text-muted-foreground">
+                  <div className="flex gap-1">
+                    <span className="text-xs text-islamic-foreground/90">
                       {PRAYER_LABELS[key]}
                     </span>
                     {isCurrent && (
                       <Badge
-                        variant="default"
+                        variant="islamic"
                         className="w-fit h-4 px-1 text-[10px] font-normal"
                       >
                         Now
                       </Badge>
                     )}
                   </div>
-                  <span className="text-sm font-semibold tabular-nums">
+                  <span className="text-sm font-semibold tabular-nums text-islamic-foreground">
                     {to12Hour(data.prayer_times[key])}
                   </span>
                 </div>

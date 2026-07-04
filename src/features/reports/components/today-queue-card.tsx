@@ -90,7 +90,7 @@ export function TodayQueueCard() {
                 <button
                   type="button"
                   onClick={() => navigate(`/visits/${v.id}`)}
-                  className="flex w-full items-center gap-3 py-2 text-left transition-colors hover:bg-muted/50"
+                  className="flex w-full items-center gap-3 p-2 rounded-md text-left transition-colors hover:bg-accent/50 cursor-pointer"
                 >
                   <span className="w-20 shrink-0 text-xs text-muted-foreground tabular-nums">
                     {formatDateTime(v.datetime).split(", ").pop()}

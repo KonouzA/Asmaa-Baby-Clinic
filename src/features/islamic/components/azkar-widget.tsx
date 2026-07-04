@@ -10,20 +10,20 @@ export function AzkarWidget() {
   const { data, isLoading, isFetching, isError, refetch } = useRandomDua();
 
   return (
-    <Card className="bg-linear-to-br from-accent/10 to-secondary/5">
+    <Card className="bg-linear-to-br from-islamic/20 to-secondary/5 border-2 border-islamic">
       <CardContent className="flex items-center gap-4">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent/20 text-accent">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-islamic/50 text-islamic-foreground">
           <Sparkles className="size-4" />
         </div>
 
-        <div className="min-w-0 flex-1 items-center space-y-1">
+        <div className="min-w-0 flex-1 items-center space-y-1 text-islamic-foreground">
           {isLoading ? (
             <>
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
             </>
           ) : isError || !data ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
               Could not load a dua right now.
             </p>
           ) : (

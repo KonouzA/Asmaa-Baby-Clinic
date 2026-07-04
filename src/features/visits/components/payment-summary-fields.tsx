@@ -22,7 +22,9 @@ export function PaymentSummaryFields({ form }: { form: VisitForm }) {
           <Input
             id="plan_follow_up_date"
             type="date"
-            {...register("plan_follow_up_date")}
+            {...register("plan_follow_up_date", {
+              setValueAs: (v) => (v === "" ? undefined : v),
+            })}
           />
         </Field>
         <Field>

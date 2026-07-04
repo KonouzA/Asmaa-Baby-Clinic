@@ -7,8 +7,8 @@ import {
   Users,
 } from "lucide-react";
 import { usePageHeader } from "@/components/main-layout";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { ResponsiveTabsNav } from "@/features/patients/components/responsive-tabs-nav";
 import {
   IncomeExpenseChart,
   PatientAgeChart,
@@ -24,6 +24,13 @@ import {
 } from "@/features/reports";
 import { ExpensesTable } from "@/features/expenses";
 
+const REPORT_TABS = [
+  { value: "overview", label: "Overview" },
+  { value: "expenses", label: "Expenses" },
+] as const;
+
+type ReportTab = (typeof REPORT_TABS)[number]["value"];
+
 const now = new Date();
 
 export function ReportsPage() {
@@ -33,6 +40,7 @@ export function ReportsPage() {
 
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
+  const [tab, setTab] = useState<ReportTab>("overview");
 
   const yearQuery = useReportsYear(year);
   const months = yearQuery.data ?? [];
@@ -66,13 +74,8 @@ export function ReportsPage() {
         />
       </div>
 
-      <Tabs defaultValue="overview">
-        <Card size="sm" className="w-fit p-1">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="expenses">Expenses</TabsTrigger>
-          </TabsList>
-        </Card>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as ReportTab)}>
+        <ResponsiveTabsNav tabs={REPORT_TABS} value={tab} onValueChange={setTab} />
 
         <TabsContent value="overview" className="mt-4 flex flex-col gap-6">
           {/* KPI row — selected month */}

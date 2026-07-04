@@ -27,9 +27,10 @@ export type PrayerTimes = {
 
 export type PrayerCurrentStatus = {
   current_prayer: string;
-  next_prayer: string;
-  time_until_next: string;
-  minutes_until_next: number;
+  // Null once Isha is the current prayer — the API doesn't roll over to tomorrow's Fajr.
+  next_prayer: string | null;
+  time_until_next: string | null;
+  minutes_until_next: number | null;
 };
 
 export type PrayerTimesResult = {

@@ -14,6 +14,7 @@ export {
   usePatientFull,
   usePatientGrowth,
   usePatientVisits,
+  useDeletePatient,
   patientKeys,
 } from "./hooks/use-patients";
 

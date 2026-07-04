@@ -11,6 +11,12 @@ export function useSidecar() {
   const process = useRef<Child | null>(null);
 
   useEffect(() => {
+    if (!('__TAURI_INTERNALS__' in window)) {
+      // Not running inside the Tauri webview (e.g. `bun run dev` in a browser) —
+      // run the sidecar separately with `bun run sidecar:dev` instead.
+      return;
+    }
+
     let killed = false;
 
     const start = async () => {

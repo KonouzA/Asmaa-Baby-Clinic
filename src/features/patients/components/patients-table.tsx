@@ -1,4 +1,5 @@
-import { UserRound } from "lucide-react";
+import { useState } from "react";
+import { Trash2, UserRound } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,7 +9,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useDeletePatient } from "../hooks/use-patients";
 import type { Patient } from "../schemas/patients.schema";
 import { SEX_LABELS, formatAge, formatDate } from "../lib";
 
@@ -21,6 +34,9 @@ export function PatientsTable({
   isLoading: boolean;
   onSelect: (id: string) => void;
 }) {
+  const deletePatient = useDeletePatient();
+  const [deleting, setDeleting] = useState<Patient | undefined>(undefined);
+
   return (
     <div className="overflow-hidden rounded-xl border bg-card">
       <Table>
@@ -31,6 +47,7 @@ export function PatientsTable({
             <TableHead className="w-24">Sex</TableHead>
             <TableHead className="w-32">Age</TableHead>
             <TableHead className="w-40">Date of birth</TableHead>
+            <TableHead className="w-16 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -38,7 +55,7 @@ export function PatientsTable({
             <SkeletonRows />
           ) : patients.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5}>
+              <TableCell colSpan={6}>
                 <EmptyState />
               </TableCell>
             </TableRow>
@@ -67,11 +84,51 @@ export function PatientsTable({
                 <TableCell className="text-muted-foreground">
                   {formatDate(p.dob)}
                 </TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleting(p);
+                    }}
+                    aria-label={`Delete ${p.full_name}`}
+                  >
+                    <Trash2 className="size-4 text-destructive" />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           )}
         </TableBody>
       </Table>
+
+      <AlertDialog
+        open={!!deleting}
+        onOpenChange={(open) => !open && setDeleting(undefined)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete "{deleting?.full_name}"?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes the patient and all associated records.
+              This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleting) deletePatient.mutate(deleting.id);
+                setDeleting(undefined);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -81,7 +138,7 @@ function SkeletonRows() {
     <>
       {Array.from({ length: 6 }).map((_, i) => (
         <TableRow key={i}>
-          {Array.from({ length: 5 }).map((__, j) => (
+          {Array.from({ length: 6 }).map((__, j) => (
             <TableCell key={j}>
               <Skeleton className="h-4 w-full" />
             </TableCell>

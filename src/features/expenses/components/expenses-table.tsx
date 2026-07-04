@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil, Plus, Receipt, Trash2 } from "lucide-react";
+import { Plus, Receipt, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -95,7 +95,11 @@ export function ExpensesTable({ year, month }: { year: number; month: number }) 
               </TableHeader>
               <TableBody>
                 {expenses.map((e) => (
-                  <TableRow key={e.id}>
+                  <TableRow
+                    key={e.id}
+                    className="cursor-pointer"
+                    onClick={() => openEdit(e)}
+                  >
                     <TableCell className="font-medium">{e.name}</TableCell>
                     <TableCell className="max-w-xs truncate text-muted-foreground">
                       {e.description || "—"}
@@ -104,24 +108,17 @@ export function ExpensesTable({ year, month }: { year: number; month: number }) 
                       {formatCurrency(e.value)}
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          onClick={() => openEdit(e)}
-                          aria-label={`Edit ${e.name}`}
-                        >
-                          <Pencil className="size-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          onClick={() => setDeleting(e)}
-                          aria-label={`Delete ${e.name}`}
-                        >
-                          <Trash2 className="size-4 text-destructive" />
-                        </Button>
-                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          setDeleting(e);
+                        }}
+                        aria-label={`Delete ${e.name}`}
+                      >
+                        <Trash2 className="size-4 text-destructive" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

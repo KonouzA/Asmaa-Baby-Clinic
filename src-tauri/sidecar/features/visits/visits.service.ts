@@ -222,7 +222,7 @@ export function listVisits(query: VisitListQuery) {
   }
   if (query.to) {
     conditions.push('v.datetime <= ?');
-    params.push(`${query.to} 23:59:59`);
+    params.push(`${query.to}T23:59:59`);
   }
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
