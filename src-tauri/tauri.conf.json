@@ -13,8 +13,8 @@
     "windows": [
       {
         "title": "abc",
-        "width": 800,
-        "height": 600
+        "width": 1280,
+        "height": 720
       }
     ],
     "security": {
@@ -25,6 +25,12 @@
     "active": true,
     "targets": "all",
     "externalBin": ["binaries/sidecar"],
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico"
+      }
+    },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
